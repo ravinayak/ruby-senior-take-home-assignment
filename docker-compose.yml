@@ -6,7 +6,7 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
       - ./db/schema_snapshots/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - '5439:5432'
+      - "5439:5432"
     environment:
       POSTGRES_USER: vandelay_app
       POSTGRES_PASSWORD: secret
@@ -27,7 +27,7 @@ services:
       - ./postgres-data-test:/var/lib/postgresql/data
       - ./db/schema_snapshots/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - '5440:5432'
+      - "5440:5432"
     environment:
       POSTGRES_USER: vandelay_app
       POSTGRES_PASSWORD: secret
@@ -45,7 +45,7 @@ services:
     container_name: redis
     image: redis:latest
     ports:
-      - '6387:6379'
+      - "6387:6379"
     restart: unless-stopped
 
   mock_api_one:
@@ -60,20 +60,19 @@ services:
     container_name: mock_api_two
     image: clue/json-server
     volumes:
-      - ./externals/mock_api_one:/data
+      - ./externals/mock_api_two:/data
     ports:
       - "3061:80"
-
   rest_server:
     build: .
     container_name: rest_server
     volumes:
       - .:/app
     ports:
-      - '3087:3087'
+      - "3087:3087"
     working_dir: /app
-    entrypoint:
-      - ./entry.sh
+    # This change is to allow test parameter to be passed when running through docker-compose to run tests
+    command: ./entry.sh
     depends_on:
       postgres:
         condition: service_started
